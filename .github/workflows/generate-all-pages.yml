@@ -2,7 +2,7 @@ name: Generate All Tools
 
 on:
   push:
-    branches: [ main ]
+    branches: [ gh-pages ]
   schedule:
     - cron: '0 0 * * *'
   # Add workflow_dispatch to manually trigger
