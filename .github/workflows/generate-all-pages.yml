@@ -6,17 +6,48 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+# Add a permissions block to ensure the token has what it needs
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      # 1. Checkout code - Updated to v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Python - Updated to v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - run: pip install pandas jinja2
-      - run: python generate_all_tools.py
-      - uses: peaceiris/actions-gh-pages@v3
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: pip install pandas jinja2
+
+      # 4. Generate pages
+      - name: Generate all tool pages
+        run: python generate_all_tools.py
+
+      # 5. Copy CNAME file (if you have one)
+      - name: Copy CNAME file
+        run: cp CNAME generated_pages/ || echo "No CNAME file found, skipping."
+
+      # 6. Deploy to GitHub Pages - Updated to v4 and using your new secret
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Use the PERSONAL TOKEN you created and stored as a secret
+          github_token: ${{ secrets.DEPLOY_KEY }}
+          # Optional: If you prefer to keep using the default token, uncomment the line below
+          # and comment out the one above.
+          # github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./generated_pages
+          # This helps with the force push and keeps history clean
+          force_orphan: true
