@@ -6,7 +6,7 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-# Add a permissions block to ensure the token has what it needs
+# Give the default GITHUB_TOKEN write permissions for pages and contents
 permissions:
   contents: write
   pages: write
@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code - Updated to v4
+      # 1. Checkout code - Using the latest v4
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup Python - Updated to v5
+      # 2. Setup Python - Using the latest v5
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -35,19 +35,21 @@ jobs:
       - name: Generate all tool pages
         run: python generate_all_tools.py
 
-      # 5. Copy CNAME file (if you have one)
+      # 5. Copy CNAME file if it exists
       - name: Copy CNAME file
         run: cp CNAME generated_pages/ || echo "No CNAME file found, skipping."
 
-      # 6. Deploy to GitHub Pages - Updated to v4 and using your new secret
+      # 6. Deploy to GitHub Pages - Using the latest v4 with explicit config
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          # Use the PERSONAL TOKEN you created and stored as a secret
+          # CRITICAL: Use the Personal Access Token you created and added as a secret
           github_token: ${{ secrets.DEPLOY_KEY }}
-          # Optional: If you prefer to keep using the default token, uncomment the line below
-          # and comment out the one above.
-          # github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./generated_pages
-          # This helps with the force push and keeps history clean
+          # Clean the destination branch (gh-pages) before deploying
+          clean: true
+          # Force push to overwrite history, avoids conflicts
           force_orphan: true
+          # Set user info for the git commit
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
