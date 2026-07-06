@@ -203,14 +203,14 @@ print("🗺️ Generating sitemap...")
 sitemap = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://YOUR-USERNAME.github.io/multi-tool-engine/</loc>
+        <loc>https://studentinlifeonceandalways-afk.github.io/multi-tool-engine/</loc>
         <priority>1.0</priority>
     </url>
 """
 for tool_name, pages in all_pages.items():
     for page in pages:
         sitemap += f"""    <url>
-        <loc>https://YOUR-USERNAME.github.io/multi-tool-engine/{tool_name}/{page['slug']}/</loc>
+        <loc>https://studentinlifeonceandalways-afk.github.io/multi-tool-engine/{tool_name}/{page['slug']}/</loc>
         <priority>0.8</priority>
     </url>
 """
